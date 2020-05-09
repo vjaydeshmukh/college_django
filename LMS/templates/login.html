@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Login | {{ block.super }}{% endblock %}
+{% block content %}
+
+<h1 align="center">Student Login</h1>
+    <form method="post">
+        <div align="center">
+            {% csrf_token %}
+            {{ loginF.as_p }}
+            <button type="submit">Login</button>
+            <button type="reset">Reset</button>
+        </div>
+    </form>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% endif %}
+{% endblock %}

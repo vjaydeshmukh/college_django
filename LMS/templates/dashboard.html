@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %} Dashboard | {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div align="left"><h3>Hi, {{ profile.user.get_full_name }}!</h3></div>
+    <div align="right">
+        <form method="post">
+            {% csrf_token %}
+            <a href="{% url 'user_log_out' %}"><button type="button">Logout</button></a>
+        </form>
+    </div>
+    <h3>Fine: Rs {{ fine }}</h3>
+    <hr>
+    <h2>Info</h2>
+        {% if borrow %}
+            <table border="2px" align="center" width="100%">
+                <thead>
+                    <td>Sr. No.</td>
+                    <td>Title</td>
+                    <td>Author</td>
+                    <td>Issue Date</td>
+                    <td>Return Book</td>
+                </thead>
+                {% for i in borrow %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.book }}</td>
+                        <td>{{ i.book.author }}</td>
+                        <td>{{ i.issuedate }}</td>
+                        <td><form method="post">{% csrf_token %}<button style="margin: 3px" type="submit"><a href="{% url 'user_return' i.book.isbn %}">Return</a></button></form></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You didn't borrow any book!!!</p>
+        {% endif %}
+    <hr>
+    <h2>Borrow Book</h2>
+    {% if books %}
+        <table border="2px" align="center" width="100%">
+        <thead>
+            <td>Sr. No.</td>
+            <td>Title</td>
+            <td>Author</td>
+            <td>Published</td>
+            <td>Issue</td>
+        </thead>
+        {% for i in books %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ i.title }}</td>
+                <td>{{ i.author }}</td>
+                <td>{{ i.published }}</td>
+                <td>{% if i.quantity > 0 %}<form method="post">{% csrf_token %}<button style="margin: 3px" type="submit"><a href="{% url 'user_borrow' i.isbn %}">Issue</a></button></form>{% endif %}<br><small>{{ i.quantity }} left</small></td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>No books are available to issue.</p>
+    {% endif %}
+{% endblock %}
